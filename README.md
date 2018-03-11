@@ -1,5 +1,6 @@
 # Morabaraba  
 *A brief look at the baord representation*
+**VIEW IN RAW**
 
 This current version of Morabaraba has some intresting takes to the data representation. 
 Initially the initial data representation seems adequate. This would be a 7 by 7 grid of X-Y values with the X
