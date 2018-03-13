@@ -6,11 +6,11 @@ c:\users\tianaman\desktop\documents\visual studio 2015\Projects\morabHalfDone\mo
 c:\users\tianaman\desktop\documents\visual studio 2015\Projects\morabHalfDone\morabHalfDone\bin\Debug\FSharp.Core.xml
 c:\users\tianaman\desktop\documents\visual studio 2015\Projects\morabHalfDone\morabHalfDone\obj\Debug\morabHalfDone.exe
 c:\users\tianaman\desktop\documents\visual studio 2015\Projects\morabHalfDone\morabHalfDone\obj\Debug\morabHalfDone.pdb
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\morabHalfDone.exe.config
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\morabHalfDone.XML
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\morabHalfDone.exe
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\morabHalfDone.pdb
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\FSharp.Core.dll
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\bin\Debug\FSharp.Core.xml
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\obj\Debug\morabHalfDone.exe
-C:\Ernest\Gamedev\FSharp\Morabaraba\Code So Far\morabHalfDone\obj\Debug\morabHalfDone.pdb
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\morabHalfDone.exe.config
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\morabHalfDone.XML
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\morabHalfDone.exe
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\morabHalfDone.pdb
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\FSharp.Core.dll
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\bin\Debug\FSharp.Core.xml
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\obj\Debug\morabHalfDone.exe
+C:\Ernest\Gamedev\FSharp\Morabaraba\Morabaraba\src\morabHalfDone\obj\Debug\morabHalfDone.pdb
