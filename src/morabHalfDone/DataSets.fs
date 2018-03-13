@@ -42,13 +42,12 @@ let mills = //all possible mills                                                
     let n = { PointA ={x= 2;y= 8} ; PointB = {x= 3;y= 8} ; PointC = {x= 4;y= 8} ; Activ = false ; Relodid = true}
     let o = { PointA ={x= 4;y= 8} ; PointB = {x= 5;y= 8} ; PointC = {x= 6;y= 8} ; Activ = false ; Relodid = true}
     let p = { PointA ={x= 6;y= 8} ; PointB = {x= 7;y= 8} ; PointC = {x= 0;y= 8} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
-
+    
     let q = { PointA ={x= 0;y= 16} ; PointB = {x= 1;y= 16} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
     let r = { PointA ={x= 2;y= 16} ; PointB = {x= 3;y= 16} ; PointC = {x= 4;y= 16} ; Activ = false ; Relodid = true}
     let s = { PointA ={x= 4;y= 16} ; PointB = {x= 5;y= 16} ; PointC = {x= 6;y= 16} ; Activ = false ; Relodid = true}
-    let t = { PointA ={x= 6;y= 16} ; PointB = {x= 7;y= 16} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
+    let t = { PointA ={x= 6;y= 16} ; PointB = {x= 7;y= 16} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0) 
     [a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t]
-
 
 
 //FUNCTION DEFINITIONS--------------------------------------------------

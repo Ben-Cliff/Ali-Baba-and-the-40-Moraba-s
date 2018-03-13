@@ -1,5 +1,10 @@
 ﻿module Drawing
 
+let getIcon plyr =
+    match plyr with
+    | 1 -> "X"
+    | 2 -> "0"
+
 let rec consColorWrite =
     fun (msg : string) ->
         let head = msg.Chars 0

@@ -28,12 +28,6 @@ let updateboard (f : int -> int -> int list -> int -> int -> int) (player: int) 
 let inAct =
     fun (board : int list) (coords : int list) (expect : int) -> // 0 empty, 1 player, 2 other player
         board.[coords.[0] + coords.[1]]=expect
-            
-
-let getIcon plyr =
-    match plyr with
-    | 1 -> "X"
-    | 2 -> "0"
 
 let rec interaction (player :int ) (board : int list) (sentence : string) (expect : int) : string =                                                                  //takes in input and checks if it exsists (see isoccupied for position che)
     System.Console.Clear()
@@ -89,8 +83,7 @@ let rec place (mills : Mill list) (player : int) (cowsleft : int) (board : int l
             match (ismill mills board (spott) player) with
             |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board
             |false -> (fun a -> board) 
-
-        printf"%A \n"board
+            
         match player with 
         |1 -> place mills 2 (cowsleft-1) (boarda 0 ) ismill         //Go to Next Move
         |_ -> place mills 1 (cowsleft-1) (boarda 0) ismill
@@ -144,15 +137,42 @@ let rec move (movesleft : int) (mills : Mill list) (player : int) (board : int l
 
 //LESSER FUNCTIONS. MILL CHECKS, SHOOTING
 
-          
+(*          list of each mill, board = board, spott = spot on board, player = playernum*)          
 let ismill (mills : Mill list) (board : int list) (spott : int list) (player : int): bool =                    //function checks which possible mills a co-ord can be a part of, and if they are full (call to millfull)       
-    let rec innerF (mills : Mill list) (board : int list) (spott: int list) (inc : int) (player : int) : bool =
-
-        let millfull (mil : Mill) (player : int) (board : int list): bool = 
+    // Ernest tried to fix the mill code
+    //  - Note: the code from before might work, it seems a slight bug comes from "searching" for specific mills, will sort that tomorrow
+    // This is a function checking if it is a "mill" of that players number
+    let getMillValue =
+        fun (m:Mill) ->
+            (board.[m.PointA.x + m.PointA.y]=player)&&((board.[m.PointA.x + m.PointA.y]=board.[m.PointB.x + m.PointB.y])&&(board.[m.PointC.x + m.PointC.y]=board.[m.PointB.x + m.PointB.y])) // all 3 the same? all 3 the player
+    // This is a function that hunts through the mills for the point we are currently on
+    //  - Note that this is where the bug is roughly - it currently only finds a mill from the first element in the mill points (PointA) if it is the first element
+    let rec getTheMills = 
+        fun (sspot : int list) (allThem : Mill list) (b : Mill list) ->
+            match b with
+            | [] -> allThem
+            | head::tail ->
+                match ((head.PointA.x=sspot.[0])&&(head.PointA.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1])) with
+                | true -> getTheMills sspot (head::allThem) tail
+                | false -> getTheMills sspot allThem tail
+    // When we give a shortened list this is where it checks mills for the current player
+    let rec checkEachMillHere =
+        fun (m: Mill list) (p: int) ->
+            match m with
+            | [] -> false
+            | head::tail ->
+                match (getMillValue head) with
+                | true -> true
+                | false -> checkEachMillHere tail p
+    // So, like... This works when the 3rd one is the 0,0 and calls the mill...
+    // No idea how to fix this since it's buggy
+    checkEachMillHere (getTheMills spott [] mills) player
+                
+        (*let millfull (mil : Mill) (player : int) (board : int list): bool = 
             match ( (board.[mil.PointA.x + mil.PointA.y] = player) && (board.[mil.PointB.x + mil.PointB.y] = player) && (board.[mil.PointB.x + mil.PointB.y] = player)) with
                 |true -> true
-                |_ -> false
-        let xandy (mil : Mill) (abc : string) : int list =      //generates x and y list for specofied position in mill
+                |_ -> false*) // done
+        (*let xandy (mil : Mill) (abc : string) : int list =      //generates x and y list for specofied position in mill
             match abc with
             |"A" -> [mil.PointA.x ; mil.PointA.y]
             |"B" -> [mil.PointB.x ; mil.PointB.y]
@@ -164,7 +184,7 @@ let ismill (mills : Mill list) (board : int list) (spott : int list) (player : i
         |_  -> match ((xandy mills.[inc] "A" = spott) || (xandy mills.[inc] "B" = spott) || (xandy mills.[inc] "C" = spott) ) with      //comepares the spot [x;y] with          
                |true -> millfull mills.[inc] player board
                |_ -> innerF mills board spott (inc+1) player 
-    innerF mills board spott 0 player
+    innerF mills board spott 0 player*)
     //NOTE FACK: certain positions hold up to three mills, need to carry on recursion
 
 let (placedboard : int list) = [0]
