@@ -2,11 +2,16 @@
 
 open System
 
+/// <summary>
+/// Positions we use for our data sets
+/// </summary>
 type Position = { 
     x : int
     y : int }
 
-
+/// <summary>
+/// Data structure that holds sets of 3 positions to check each mill available
+/// </summary>
 type Mill = {
     PointA : Position
     PointB : Position
@@ -16,14 +21,18 @@ type Mill = {
     Relodid : bool 
     } 
 
+/// <summary>
+/// flat co ordinate system used for operation. See ReadMe
+/// </summary>
+let flatboard : int list = 
+    // [col0   ;  col1 ;   col2  ;  col3......
+    [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0]       // .[x co ord][y co ord]. 
+    //[[r1;r2;r3];...]
 
-let flatboard : int list =                     //flat co ordinate system used for operation. See ReadMe
-   // [col0   ;  col1 ;   col2  ;  col3......
-    [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0]       // .[x co ord][y co ord]. 
-  //[[r1;r2;r3];...]
-
-  
-let mills = //all possible mills                                                                                //////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// All the possible mills available
+/// </summary>
+let mills = 
     let a = { PointA ={x= 0;y= 0} ; PointB = {x= 0;y= 8} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //verticals up-> down
     let b = { PointA ={x= 1;y= 0} ; PointB = {x= 1;y= 8} ; PointC = {x= 1;y= 16} ; Activ = false ; Relodid = true} // ''
     let c = { PointA ={x= 2;y= 0} ; PointB = {x= 2;y= 8} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // ''
@@ -36,7 +45,7 @@ let mills = //all possible mills                                                
     let i = { PointA ={x= 0;y= 0} ; PointB = {x= 1;y= 0} ; PointC = {x= 2;y= 0} ; Activ = false ; Relodid = true} //Horizontal row Left -> right starting left corner 
     let j = { PointA ={x= 2;y= 0} ; PointB = {x= 3;y= 0} ; PointC = {x= 4;y= 0} ; Activ = false ; Relodid = true}
     let k = { PointA ={x= 4;y= 0} ; PointB = {x= 5;y= 0} ; PointC = {x= 6;y= 0} ; Activ = false ; Relodid = true}
-    let l = { PointA ={x= 6;y= 0} ; PointB = {x= 7;y= 0} ; PointC = {x= 0;y= 0} ; Activ = false ; Relodid = true}  //Note! loop around     ( 0 ; 0)  
+    let l = { PointA ={x= 6;y= 0} ; PointB = {x= 7;y= 0} ; PointC = {x= 0;y= 0} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
     
     let m = { PointA ={x= 0;y= 8} ; PointB = {x= 1;y= 8} ; PointC = {x= 2;y= 8} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
     let n = { PointA ={x= 2;y= 8} ; PointB = {x= 3;y= 8} ; PointC = {x= 4;y= 8} ; Activ = false ; Relodid = true}
@@ -49,12 +58,13 @@ let mills = //all possible mills                                                
     let t = { PointA ={x= 6;y= 16} ; PointB = {x= 7;y= 16} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0) 
     [a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t]
 
-
-//FUNCTION DEFINITIONS--------------------------------------------------
-
-let mrbaToFlat (a : string) : int list =           //converts from morabaraba user co ordinates to flat co ordinates
+/// <summary>
+/// converts from morabaraba user co ordinates to flat co ordinates
+/// </summary>
+/// <param name="a">String version of the input</param>
+let mrbaToFlat (a : string) : int list = 
     match a with
-        |"A1" -> [0;0]            //  Xcoord , Ycoord
+        |"A1" -> [0;0] // Xcoord , Ycoord
         |"B2" -> [0;8]
         |"C3" -> [0;16]
         |"A4" -> [1;0]

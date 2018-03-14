@@ -1,11 +1,18 @@
 ﻿module Drawing
 
+/// <summary>
+/// Get a player's icon
+/// </summary>
+/// <param name="plyr">The player's number</param>
 let getIcon plyr =
     match plyr with
-   
     | 1 -> "X"
     | 2 -> "0"
 
+/// <summary>
+/// Write a full string with colours converted for the game (so we can have red/blue/gray/white/etc)
+/// </summary>
+/// <param name="msg">The string we need to convert and write on console</param>
 let rec consColorWrite =
     fun (msg : string) ->
         let head = msg.Chars 0
@@ -27,6 +34,11 @@ let rec consColorWrite =
         | "" -> System.Console.WriteLine() // End line
         | _ -> consColorWrite newMsg
 
+/// <summary>
+/// Conversion from 0,1,2 to a blank space or the character we want to show for the player
+///  - as a side note, this should also be adjusted in consColorWrite for use if we adjust these
+/// </summary>
+/// <param name="item"></param>
 let whatBoardDraws =
     fun item ->
         match item with
@@ -34,6 +46,10 @@ let whatBoardDraws =
         | 1 -> 'X'
         | 2 -> '0'
 
+/// <summary>
+/// Convert the "int list" we keep the board in to a coloured grid on the console window
+/// </summary>
+/// <param name="board">The tile set we are using</param>
 let drawBoard =
     fun (board: int list) ->
         let lin00 =         "\t  \t1,2,3    4    5,6,7"
@@ -57,8 +73,11 @@ let drawBoard =
                                                   + lin13 + "\n";
         consColorWrite boundString
 
-
+/// <summary>
+/// Writes magenta text to the player to let them know that something was wrong
+/// </summary>
+/// <param name="msg">The message to tell them</param>
 let writeError (msg : string) =
     System.Console.ForegroundColor<-System.ConsoleColor.Magenta
     System.Console.WriteLine(msg)
-    System.Threading.Thread.Sleep(1750)
+    System.Threading.Thread.Sleep(2000)
