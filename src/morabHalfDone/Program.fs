@@ -104,20 +104,36 @@ let rec move (movesleft : int) (mills : Mill list) (player : int) (board : int l
     let movetos = interaction player board "move to" 0//take in user input
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
-    (*let allgood = match oneaway from moveto with
-                |true -> updateboard insertcow player moveto (updateboard removecow player from board)    
-                //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-                |_ -> move*) 
+
 
     let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
-        match (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1)) with //x value differs by 1        
+        let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
+        let b = (moveto.[0] = (from.[0] + 7)) || (moveto.[0] = (from.[0] - 7))
+        let c = (moveto.[1] = (from.[1] + 8)) || (moveto.[1] = (from.[1] - 8))
+        match  a, b, c with
+        | true, false, false
+        | false, true, false
+        | false, false, true ->
+            match board.[moveto.[0] + moveto.[1]]=0 with
+            | true -> true
+            | _ -> false
+        | _ -> false
+        (*match (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1)) with //x value differs by 1        
         |true -> match (moveto.[1] = (from.[1] + 1)) || (moveto.[1] = (from.[1] - 1)) with //y value differs by 1 
                  |true -> true
                  |_ -> false
-        |_ -> false
-        
-    let board = updateboard insertcow player (moveto.[0] + moveto.[1]) (updateboard removecow player (from.[0] + from.[1]) board)    
+        |_ -> false*)
 
+    let allgood = match oneaway from moveto with
+                  |true -> updateboard insertcow player (moveto.[0]+moveto.[1]) (updateboard removecow player (from.[0] + from.[1]) board)  
+                  //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+                  |_ -> move movesleft mills player board ismill //move movesleft mills 
+
+    //let board = updateboard insertcow player (moveto.[0] + moveto.[1]) (updateboard removecow player (from.[0] + from.[1]) board)    
+    let boarda =                                         //checks if cow is in a mill, shoots if it is
+            match (ismill mills allgood (moveto) player) with
+            |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+            |false -> allgood 
 
 
         //------------------------------------------------
@@ -125,12 +141,12 @@ let rec move (movesleft : int) (mills : Mill list) (player : int) (board : int l
             match (ismill mills board (moveto) player) with
             |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board
             |false -> board*)
-    printf"%A \n"board
+    printf"%A \n"boarda
     match movesleft with
-    |0 -> board
+    |0 -> boarda
     |_ -> match player with 
-          |1 -> move (movesleft-1) mills 2 (board) ismill 
-          |_ -> move (movesleft-1) mills 1 (board) ismill
+          |1 -> move (movesleft-1) mills 2 (boarda) ismill 
+          |_ -> move (movesleft-1) mills 1 (boarda) ismill
     
             
 
@@ -208,7 +224,7 @@ let ismill (mills : Mill list) (board : int list) (spott : int list) (player : i
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    move 20 mills 1 (place mills 1 24 flatboard ismill) ismill
+    move 20 mills 1 (place mills 1 (* this 24 *)6 flatboard ismill) ismill
     0 // return an integer exit code
 
 
