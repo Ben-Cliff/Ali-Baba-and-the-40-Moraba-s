@@ -30,7 +30,7 @@ let inAct =
         board.[coords.[0] + coords.[1]]=expect
 
 let rec interaction (player :int ) (board : int list) (sentence : string) (expect : int) : string =                                                                  //takes in input and checks if it exsists (see isoccupied for position che)
-    System.Console.Clear()
+    //System.Console.Clear()
     drawBoard board
     let msg = sprintf "%A's  turn: type the Y value of the cell that you want to %s. 
              Only accepts letters A ; B ; C ; D; E ; F ; G" (getIcon player) sentence // sentence = "play into" for place state as appose to " mve from " alterative for move state
@@ -62,9 +62,10 @@ let otherplayer (player : int) : int = //Returns the opposite player
     |_ -> 1
 
 let shoot (point : int) (victim: int) (board: int list) (player): int list =   //Still need to make sure the victim cow is not in a mill
-    sprintf "Mill Formed!" |> ignore
+    System.Console.WriteLine("asdf")
     System.Threading.Thread.Sleep(2000)
-    let point = interaction player board "to shoot" (otherplayer player)  
+
+    let point = interaction player board "to shoot" (otherplayer player)
     updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board
 
 let rec place (mills : Mill list) (player : int) (cowsleft : int) (board : int list) (ismill : Mill list -> int list -> int list -> int -> bool) : int list=        //SKELETON //cowsleft should be 24 when first called
@@ -82,12 +83,12 @@ let rec place (mills : Mill list) (player : int) (cowsleft : int) (board : int l
 
         let boarda =                                         //checks if cow is in a mill, shoots if it is
             match (ismill mills board (spott) player) with
-            |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board
-            |false -> (fun a -> board) 
+            |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
+            |false -> board 
             
         match player with 
-        |1 -> place mills 2 (cowsleft-1) (boarda 0 ) ismill         //Go to Next Move
-        |_ -> place mills 1 (cowsleft-1) (boarda 0) ismill
+        |1 -> place mills 2 (cowsleft-1) boarda ismill         //Go to Next Move
+        |_ -> place mills 1 (cowsleft-1) boarda ismill
     
     //take coordinate of just placed piece from int list
 // recursive innerf looks at mill list, compare singulare coordinate with mills 
@@ -153,12 +154,12 @@ let ismill (mills : Mill list) (board : int list) (spott : int list) (player : i
             match b with
             | [] -> allThem
             | head::tail ->
-                match ((head.PointA.x=sspot.[0])&&(head.PointA.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1])) with
+                match ((head.PointA.x=sspot.[0])&&(head.PointA.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1]))||((head.PointC.x=sspot.[0])&&(head.PointC.y=sspot.[1])) with
                 | true -> getTheMills sspot (head::allThem) tail
                 | false -> getTheMills sspot allThem tail
     // Slightly Random
     let checkEachOption =
-        fun (m: Mill) (sppoott: int list) ->
+        fun (m: Mill) (sppoott: int list) -> // sppoott is same as other ssssspppppooooooottttts
             let q = m.PointA.x+m.PointA.y=sppoott.[0]+sppoott.[1]
             let r = m.PointB.x+m.PointB.y=sppoott.[0]+sppoott.[1]
             let e = m.PointC.x+m.PointC.y=sppoott.[0]+sppoott.[1]
