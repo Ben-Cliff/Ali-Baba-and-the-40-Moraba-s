@@ -2,7 +2,7 @@
 
 let getIcon plyr =
     match plyr with
-    | 0 -> "iuyuyiu"
+   
     | 1 -> "X"
     | 2 -> "0"
 

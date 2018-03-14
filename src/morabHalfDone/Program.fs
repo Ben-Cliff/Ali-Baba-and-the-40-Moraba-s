@@ -1,5 +1,4 @@
 ﻿module Morabaraba
-
 open DataSets
 open Drawing
 
@@ -30,8 +29,9 @@ let inAct =
         board.[coords.[0] + coords.[1]]=expect
 
 let rec interaction (player :int ) (board : int list) (sentence : string) (expect : int) : string =                                                                  //takes in input and checks if it exsists (see isoccupied for position che)
-    //System.Console.Clear()
+    System.Console.Clear()
     drawBoard board
+     
     let msg = sprintf "%A's  turn: type the Y value of the cell that you want to %s. 
              Only accepts letters A ; B ; C ; D; E ; F ; G" (getIcon player) sentence // sentence = "play into" for place state as appose to " mve from " alterative for move state
     consColorWrite msg
@@ -62,7 +62,7 @@ let otherplayer (player : int) : int = //Returns the opposite player
     |_ -> 1
 
 let shoot (point : int) (victim: int) (board: int list) (player): int list =   //Still need to make sure the victim cow is not in a mill
-    System.Console.WriteLine("asdf")
+    System.Console.WriteLine("MIll Formed. Here I go killin' again")
     System.Threading.Thread.Sleep(2000)
 
     let point = interaction player board "to shoot" (otherplayer player)
