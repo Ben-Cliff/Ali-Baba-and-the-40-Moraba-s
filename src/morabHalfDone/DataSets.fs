@@ -19,7 +19,7 @@ type Mill = {
 
 let flatboard : int list =                     //flat co ordinate system used for operation. See ReadMe
    // [col0   ;  col1 ;   col2  ;  col3......
-    [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0]       // .[x co ord][y co ord]. 
+    [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0]       // .[x co ord][y co ord]. 
   //[[r1;r2;r3];...]
 
   

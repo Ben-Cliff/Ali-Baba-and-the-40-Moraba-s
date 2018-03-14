@@ -62,7 +62,8 @@ let otherplayer (player : int) : int = //Returns the opposite player
     |_ -> 1
 
 let shoot (point : int) (victim: int) (board: int list) (player): int list =   //Still need to make sure the victim cow is not in a mill
-    printfn "Mill Formed!"
+    sprintf "Mill Formed!" |> ignore
+    System.Threading.Thread.Sleep(2000)
     let point = interaction player board "to shoot" (otherplayer player)  
     updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board
 
@@ -155,19 +156,35 @@ let ismill (mills : Mill list) (board : int list) (spott : int list) (player : i
                 match ((head.PointA.x=sspot.[0])&&(head.PointA.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1])) with
                 | true -> getTheMills sspot (head::allThem) tail
                 | false -> getTheMills sspot allThem tail
-    // When we give a shortened list this is where it checks mills for the current player
-    let rec checkEachMillHere =
-        fun (m: Mill list) (p: int) ->
-            match m with
+    // Slightly Random
+    let checkEachOption =
+        fun (m: Mill) (sppoott: int list) ->
+            let q = m.PointA.x+m.PointA.y=sppoott.[0]+sppoott.[1]
+            let r = m.PointB.x+m.PointB.y=sppoott.[0]+sppoott.[1]
+            let e = m.PointC.x+m.PointC.y=sppoott.[0]+sppoott.[1]
+            let a = board.[m.PointA.x+m.PointA.y]
+            let b = board.[m.PointB.x+m.PointB.y]
+            let c = board.[m.PointC.x+m.PointC.y]
+            let d = board.[sppoott.[0]+sppoott.[1]]
+            let e = a=d
+            let f = b=d
+            let g = c=d
+            match q,r,e with
+            | true, false, false | false, true, false | false, false, true ->
+                match e,f,g with
+                | true, true, true -> true
+                | _ -> false
+            | _ -> false
+    let chosenMills = getTheMills spott [] mills
+    let rec eachChoice =
+        fun (cm: Mill list) (spooot: int list) ->
+            match cm with
             | [] -> false
             | head::tail ->
-                match (getMillValue head) with
+                match checkEachOption head spott with
                 | true -> true
-                | false -> checkEachMillHere tail p
-    // So, like... This works when the 3rd one is the 0,0 and calls the mill...
-    // No idea how to fix this since it's buggy
-    checkEachMillHere (getTheMills spott [] mills) player
-                
+                | false -> eachChoice tail spott
+    eachChoice chosenMills spott
         (*let millfull (mil : Mill) (player : int) (board : int list): bool = 
             match ( (board.[mil.PointA.x + mil.PointA.y] = player) && (board.[mil.PointB.x + mil.PointB.y] = player) && (board.[mil.PointB.x + mil.PointB.y] = player)) with
                 |true -> true
