@@ -238,14 +238,6 @@ let rec move (movesleft : int) (player : int) (board : int list) (ismill : Mill 
     |_ -> match player with 
           |1 -> move (movesleft-1) 2 (boarda) ismill 
           |_ -> move (movesleft-1) 1 (boarda) ismill
-    
-            
-//---------------------------------------------------------------------------------
-// LESSER FUNCTIONS. MILL CHECKS, SHOOTING, ETC
-//---------------------------------------------------------------------------------
-
-(*          list of each mill, board = board, spott = spot on board, player = playernum*)  
-
 
 //---------------------------------------------------------------------------------
 // WE START HERE
