@@ -224,7 +224,7 @@ let ismill (mills : Mill list) (board : int list) (spott : int list) (player : i
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    move 20 mills 1 (place mills 1 (* this 24 *)6 flatboard ismill) ismill
+    move 20 mills 1 (place mills 1 24 flatboard ismill) ismill
     0 // return an integer exit code
 
 
