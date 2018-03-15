@@ -87,7 +87,12 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
             // For this we use it by giving it the list of potential mills, check if the player type matches in each of the 3 mill locations
             let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot]
             match a=checkEquals,b=checkEquals,c=checkEquals with
-            | true, true, true -> true // If each of the spots has the same value: it is a mill, we share "true"
+            | true, true, true ->
+                match checkEquals with
+                | 0-> false
+                | _ -> true
+                //System.Console.WriteLine ("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString()) 
+                //true // If each of the spots has the same value: it is a mill, we share "true"
             | _ -> false
     /// We find the set of chosen mills by saying "let's choose mills to look at that contain our spot from the list of mills"
     let chosenMills = getTheMills spot [] mills
@@ -97,6 +102,7 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
             match cm with
             | [] -> false // When the list gets empty we unfortunately found no mills
             | head::tail ->
+                System.Console.WriteLine() 
                 // This calls the check each option defined above to get true or false if its a mill
                 //  - true => we have a mill, we can stop
                 //  - false => we look at the next one until the list of mills to check was emptied
@@ -129,7 +135,7 @@ let inAct =
 /// <param name="expect">What we are expecting</param>
 let rec interaction (player : Player) (board : int list) (sentence : string) (expect : Player) : string =  //takes in input and checks if it exsists (see isoccupied for position che)
     // This draws the board for us, Ernest's personal preference is clearing the console so it's more like a "game"
-    System.Console.Clear()
+    //System.Console.Clear()
     drawBoard board
     
     // Work out what to tell the player
@@ -176,13 +182,60 @@ let otherplayer (player : Player) : Player =
 /// <param name="board">The board we are using</param>
 /// <param name="player">The current player</param>
 let shoot (point : int) (victim: Player) (board: int list) (player : Player): int list = //Still need to make sure the victim cow is not in a mill
-    System.Console.Clear()
+    //System.Console.Clear()
     drawBoard board
     System.Console.WriteLine("MIll Formed. Here I go killin' again")
     System.Threading.Thread.Sleep(2000)
 
     let point = interaction player board "to shoot" (otherplayer player)
     updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board
+
+
+
+////////////////////////////////////FLY Boi//////////////////////////////
+
+let rec fly (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
+    let froms = interaction player board "fly from" player // take in user input
+    let movetos = interaction player board "fly to" Neither     // take in user input
+    let (from : int list) = mrbaToFlat froms
+    let (moveto : int list) = mrbaToFlat movetos 
+
+    let rec countMyCows =
+        fun (b: int list) (total: int) (me : Player) ->
+            match b with
+            | [] -> total
+            | head::tail ->
+                match head=(swapPlayerToInt me) with
+                | true -> countMyCows tail (total+1) me
+                | false -> countMyCows tail total me
+    let myCount = countMyCows board 0 player
+
+    let oneaway (from: int list) (moveto : int list) : bool = true //checks if move position is 1 away // not essential for fly. actually not essential at all
+       
+    let allgood = match oneaway from moveto with
+        |true ->
+              let b = updateboard removecow player (from.[0] + from.[1]) board
+              updateboard insertcow player (moveto.[0]+moveto.[1]) b
+        //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+        |_ -> fly movesleft player board //move movesleft mills 
+
+    let boarda = //checks if cow is in a mill, shoots if it is
+            match ismill board allgood (moveto.[0] + moveto.[1]) with
+            |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+            |false -> allgood 
+     
+    printf "%A \n" boarda
+    match player with 
+    | Red -> 
+        match (countMyCows boarda 0 Blue) with
+        | 2 -> [99999999]
+        | 3 -> fly (movesleft-1) Blue (boarda) 
+        | _ -> moven (movesleft-1) Blue (boarda) 
+    |_ ->
+        match (countMyCows boarda 0 Red) with
+        | 2 -> [99] //lost
+        | 3 -> fly (movesleft-1) Red (boarda) // fly
+        | _ -> moven (movesleft-1) Red (boarda)
 
 /// <summary>
 /// In progress version allows the 24 placement moves (? Ernest unsure)
@@ -237,13 +290,13 @@ let rec move (movesleft : int) (player : Player) (board : int list) : int list =
     match player with 
     | Red -> 
         match (countMyCows boarda 0 Blue) with
-        | 2 -> [] //lost
-        | 3 -> [] //fly
+        | 2 -> [99] //lost
+        | 3 -> fly (movesleft-1) Blue (boarda) //fly
         | _ -> move (movesleft-1) Blue (boarda) 
     |_ ->
         match (countMyCows boarda 0 Red) with
-        | 2 -> [] //lost
-        | 3 -> move (movesleft-1) Red (boarda) // fly
+        | 2 -> [99] //lost
+        | 3 -> fly (movesleft-1) Red (boarda) // fly
         | _ -> move (movesleft-1) Red (boarda)
 
 /// <summary>
@@ -288,5 +341,5 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    let a = move 20 Blue (place Blue 8 flatboard)
+    let a = move 20 Red (place Red 8 flatboard)
     0
