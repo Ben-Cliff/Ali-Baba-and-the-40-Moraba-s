@@ -198,7 +198,15 @@ let rec move (movesleft : int) (player : Player) (board : int list) : int list =
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
 
-    System.Console.WriteLine("move")
+    let rec countMyCows =
+        fun (b: int list) (total: int) (me : Player) ->
+            match b with
+            | [] -> total
+            | head::tail ->
+                match head=(swapPlayerToInt me) with
+                | true -> countMyCows tail (total+1) me
+                | false -> countMyCows tail total me
+    let myCount = countMyCows board 0 player
 
     let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
         let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
@@ -214,11 +222,11 @@ let rec move (movesleft : int) (player : Player) (board : int list) : int list =
         | _ -> false
 
     let allgood = match oneaway from moveto with
-                  |true ->
-                        let b = updateboard removecow player (from.[0] + from.[1]) board
-                        updateboard insertcow player (moveto.[0]+moveto.[1]) b
-                  //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-                  |_ -> move movesleft player board //move movesleft mills 
+        |true ->
+              let b = updateboard removecow player (from.[0] + from.[1]) board
+              updateboard insertcow player (moveto.[0]+moveto.[1]) b
+        //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+        |_ -> move movesleft player board //move movesleft mills 
 
     let boarda = //checks if cow is in a mill, shoots if it is
             match ismill board allgood (moveto.[0] + moveto.[1]) with
@@ -226,11 +234,17 @@ let rec move (movesleft : int) (player : Player) (board : int list) : int list =
             |false -> allgood 
      
     printf "%A \n" boarda
-    match movesleft with
-    |0 -> boarda
-    |_ -> match player with 
-          | Red -> move (movesleft-1) Blue (boarda) 
-          |_ -> move (movesleft-1) Red (boarda)
+    match player with 
+    | Red -> 
+        match (countMyCows boarda 0 Blue) with
+        | 2 -> [] //lost
+        | 3 -> [] //fly
+        | _ -> move (movesleft-1) Blue (boarda) 
+    |_ ->
+        match (countMyCows boarda 0 Red) with
+        | 2 -> [] //lost
+        | 3 -> move (movesleft-1) Red (boarda) // fly
+        | _ -> move (movesleft-1) Red (boarda)
 
 /// <summary>
 /// Placing a cow
