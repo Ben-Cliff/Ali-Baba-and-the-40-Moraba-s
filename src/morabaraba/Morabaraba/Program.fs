@@ -60,6 +60,31 @@ let updateboard (f : Player -> int -> int list -> int -> Player -> Player) (play
 /// <param name="spot">The co-ordinates we are using</param>
 /// <param name="player">The current player</param>
 let ismill (board : int list) (spot : int list) (player : int): bool =
+    let mills = 
+        let a = { PointA ={x= 0;y= 0} ; PointB = {x= 0;y= 8} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //verticals up-> down
+        let b = { PointA ={x= 1;y= 0} ; PointB = {x= 1;y= 8} ; PointC = {x= 1;y= 16} ; Activ = false ; Relodid = true} // ''
+        let c = { PointA ={x= 2;y= 0} ; PointB = {x= 2;y= 8} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // ''
+        let d = { PointA ={x= 3;y= 0} ; PointB = {x= 3;y= 8} ; PointC = {x= 3;y= 16} ; Activ = false ; Relodid = true}
+        let e = { PointA ={x= 4;y= 0} ; PointB = {x= 4;y= 8} ; PointC = {x= 4;y= 16} ; Activ = false ; Relodid = true}
+        let f = { PointA ={x= 5;y= 0} ; PointB = {x= 5;y= 8} ; PointC = {x= 5;y= 16} ; Activ = false ; Relodid = true}
+        let g = { PointA ={x= 6;y= 0} ; PointB = {x= 6;y= 8} ; PointC = {x= 6;y= 16} ; Activ = false ; Relodid = true}
+        let h = { PointA ={x= 7;y= 0} ; PointB = {x= 7;y= 8} ; PointC = {x= 7;y= 16} ; Activ = false ; Relodid = true}
+        
+        let i = { PointA ={x= 0;y= 0} ; PointB = {x= 1;y= 0} ; PointC = {x= 2;y= 0} ; Activ = false ; Relodid = true} //Horizontal row Left -> right starting left corner 
+        let j = { PointA ={x= 2;y= 0} ; PointB = {x= 3;y= 0} ; PointC = {x= 4;y= 0} ; Activ = false ; Relodid = true}
+        let k = { PointA ={x= 4;y= 0} ; PointB = {x= 5;y= 0} ; PointC = {x= 6;y= 0} ; Activ = false ; Relodid = true}
+        let l = { PointA ={x= 6;y= 0} ; PointB = {x= 7;y= 0} ; PointC = {x= 0;y= 0} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
+        
+        let m = { PointA ={x= 0;y= 8} ; PointB = {x= 1;y= 8} ; PointC = {x= 2;y= 8} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
+        let n = { PointA ={x= 2;y= 8} ; PointB = {x= 3;y= 8} ; PointC = {x= 4;y= 8} ; Activ = false ; Relodid = true}
+        let o = { PointA ={x= 4;y= 8} ; PointB = {x= 5;y= 8} ; PointC = {x= 6;y= 8} ; Activ = false ; Relodid = true}
+        let p = { PointA ={x= 6;y= 8} ; PointB = {x= 7;y= 8} ; PointC = {x= 0;y= 8} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
+        
+        let q = { PointA ={x= 0;y= 16} ; PointB = {x= 1;y= 16} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
+        let r = { PointA ={x= 2;y= 16} ; PointB = {x= 3;y= 16} ; PointC = {x= 4;y= 16} ; Activ = false ; Relodid = true}
+        let s = { PointA ={x= 4;y= 16} ; PointB = {x= 5;y= 16} ; PointC = {x= 6;y= 16} ; Activ = false ; Relodid = true}
+        let t = { PointA ={x= 6;y= 16} ; PointB = {x= 7;y= 16} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0) 
+        [a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t]
     /// getMillValue checks if each of the 3 tiles in the mill have the same value
     let getMillValue =
         fun (m:Mill) ->
@@ -86,6 +111,7 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
         fun (m: Mill) (spot: int) ->
             // For this we use it by giving it the list of potential mills, check if the player type matches in each of the 3 mill locations
             let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot]
+            System.Console.WriteLine("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString())
             match a=checkEquals,b=checkEquals,c=checkEquals with
             | true, true, true ->
                 match checkEquals with
@@ -96,6 +122,7 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
             | _ -> false
     /// We find the set of chosen mills by saying "let's choose mills to look at that contain our spot from the list of mills"
     let chosenMills = getTheMills spot [] mills
+    let a = 1
     /// eachChoice checks on each of the mills that we found with getTheMills above this and returns true if 1 mill was formed with the move
     let rec eachChoice =
         fun (cm: Mill list) (spooot: int list) ->
@@ -181,61 +208,37 @@ let otherplayer (player : Player) : Player =
 /// <param name="victim">The victim you are shooting</param>
 /// <param name="board">The board we are using</param>
 /// <param name="player">The current player</param>
-let shoot (point : int) (victim: Player) (board: int list) (player : Player): int list = //Still need to make sure the victim cow is not in a mill
+let rec shoot (point : int) (victim: Player) (board: int list) (player : Player): int list = //Still need to make sure the victim cow is not in a mill
     //System.Console.Clear()
     drawBoard board
     System.Console.WriteLine("MIll Formed. Here I go killin' again")
     System.Threading.Thread.Sleep(2000)
 
     let point = interaction player board "to shoot" (otherplayer player)
-    updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board
-
+    match ismill board (mrbaToFlat point) (swapPlayerToInt victim) with
+    |false -> updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board  //shoot em
+    |_ -> shoot 0 victim board player           //Case for shooting at a mill. Tries shoot again (asks for new input)
 
 
 ////////////////////////////////////FLY Boi//////////////////////////////
 
-let rec fly (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
-    let froms = interaction player board "fly from" player // take in user input
-    let movetos = interaction player board "fly to" Neither     // take in user input
-    let (from : int list) = mrbaToFlat froms
-    let (moveto : int list) = mrbaToFlat movetos 
+//let rec fly (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
+//    let froms = interaction player board "fly from" player // take in user input
+//    let movetos = interaction player board "fly to" Neither     // take in user input
+//    let (from : int list) = mrbaToFlat froms
+//    let (moveto : int list) = mrbaToFlat movetos 
+//
+//    let rec countMyCows =
+//        fun (b: int list) (total: int) (me : Player) ->
+//            match b with
+//            | [] -> total
+//            | head::tail ->
+//                match head=(swapPlayerToInt me) with
+//                | true -> countMyCows tail (total+1) me
+//                | false -> countMyCows tail total me
+//    let myCount = countMyCows board 0 player
 
-    let rec countMyCows =
-        fun (b: int list) (total: int) (me : Player) ->
-            match b with
-            | [] -> total
-            | head::tail ->
-                match head=(swapPlayerToInt me) with
-                | true -> countMyCows tail (total+1) me
-                | false -> countMyCows tail total me
-    let myCount = countMyCows board 0 player
-
-    let oneaway (from: int list) (moveto : int list) : bool = true //checks if move position is 1 away // not essential for fly. actually not essential at all
-       
-    let allgood = match oneaway from moveto with
-        |true ->
-              let b = updateboard removecow player (from.[0] + from.[1]) board
-              updateboard insertcow player (moveto.[0]+moveto.[1]) b
-        //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-        |_ -> fly movesleft player board //move movesleft mills 
-
-    let boarda = //checks if cow is in a mill, shoots if it is
-            match ismill board allgood (moveto.[0] + moveto.[1]) with
-            |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
-            |false -> allgood 
-     
-    printf "%A \n" boarda
-    match player with 
-    | Red -> 
-        match (countMyCows boarda 0 Blue) with
-        | 2 -> [99999999]
-        | 3 -> fly (movesleft-1) Blue (boarda) 
-        | _ -> moven (movesleft-1) Blue (boarda) 
-    |_ ->
-        match (countMyCows boarda 0 Red) with
-        | 2 -> [99] //lost
-        | 3 -> fly (movesleft-1) Red (boarda) // fly
-        | _ -> moven (movesleft-1) Red (boarda)
+    
 
 /// <summary>
 /// In progress version allows the 24 placement moves (? Ernest unsure)
@@ -245,9 +248,14 @@ let rec fly (movesleft : int) (player : Player) (board : int list) : int list = 
 /// <param name="player">The current player</param>
 /// <param name="board">The board we are using</param>
 /// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
-let rec move (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
-    let froms = interaction player board "move from" player // take in user input
-    let movetos = interaction player board "move to" Neither     // take in user input
+let rec move (movesleft : int) (player : Player) (board : int list) (isFly : bool) : int list =        //SKELETON 
+    let isw =
+        match isFly with
+        | true -> "fly" 
+        | false-> "move"
+    
+    let froms = interaction player board (isw + " to ") player // take in user input
+    let movetos = interaction player board (isw + " to ") Neither     // take in user input
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
 
@@ -260,44 +268,72 @@ let rec move (movesleft : int) (player : Player) (board : int list) : int list =
                 | true -> countMyCows tail (total+1) me
                 | false -> countMyCows tail total me
     let myCount = countMyCows board 0 player
+    match isFly with
+    | true ->
+        let oneaway (from: int list) (moveto : int list) : bool = true //checks if move position is 1 away // not essential for fly. actually not essential at all
+           
+        let allgood = match oneaway from moveto with
+            |true ->
+                  let b = updateboard removecow player (from.[0] + from.[1]) board
+                  updateboard insertcow player (moveto.[0]+moveto.[1]) b
+            //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+            |_ -> move movesleft player board true //move movesleft mills 
 
-    let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
-        let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
-        let b = (moveto.[0] = (from.[0] + 7)) || (moveto.[0] = (from.[0] - 7))
-        let c = (moveto.[1] = (from.[1] + 8)) || (moveto.[1] = (from.[1] - 8))
-        match  a, b, c with
-        | true, false, false
-        | false, true, false
-        | false, false, true ->
-            match board.[moveto.[0] + moveto.[1]]=0 with
-            | true -> true
+        let boarda = //checks if cow is in a mill, shoots if it is
+                match ismill board allgood (moveto.[0] + moveto.[1]) with
+                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+                |false -> allgood 
+         
+        printf "%A \n" boarda
+        match player with 
+        | Red -> 
+            match (countMyCows boarda 0 Blue) with
+            | 2 -> [99999999]
+            | 3 -> move (movesleft-1) Blue (boarda) true
+            | _ -> move (movesleft-1) Blue (boarda) false
+        |_ ->
+            match (countMyCows boarda 0 Red) with
+            | 2 -> [99] //lost
+            | 3 -> move (movesleft-1) Red (boarda) true // fly
+            | _ -> move (movesleft-1) Red (boarda) false
+    | false ->
+        let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
+            let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
+            let b = (moveto.[0] = (from.[0] + 7)) || (moveto.[0] = (from.[0] - 7))
+            let c = (moveto.[1] = (from.[1] + 8)) || (moveto.[1] = (from.[1] - 8))
+            match  a, b, c with
+            | true, false, false
+            | false, true, false
+            | false, false, true ->
+                match board.[moveto.[0] + moveto.[1]]=0 with
+                | true -> true
+                | _ -> false
             | _ -> false
-        | _ -> false
 
-    let allgood = match oneaway from moveto with
-        |true ->
-              let b = updateboard removecow player (from.[0] + from.[1]) board
-              updateboard insertcow player (moveto.[0]+moveto.[1]) b
-        //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-        |_ -> move movesleft player board //move movesleft mills 
+        let allgood = match oneaway from moveto with
+            |true ->
+                  let b = updateboard removecow player (from.[0] + from.[1]) board
+                  updateboard insertcow player (moveto.[0]+moveto.[1]) b
+            //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+            |_ -> move movesleft player board isFly //move movesleft mills 
 
-    let boarda = //checks if cow is in a mill, shoots if it is
-            match ismill board allgood (moveto.[0] + moveto.[1]) with
-            |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
-            |false -> allgood 
-     
-    printf "%A \n" boarda
-    match player with 
-    | Red -> 
-        match (countMyCows boarda 0 Blue) with
-        | 2 -> [99] //lost
-        | 3 -> fly (movesleft-1) Blue (boarda) //fly
-        | _ -> move (movesleft-1) Blue (boarda) 
-    |_ ->
-        match (countMyCows boarda 0 Red) with
-        | 2 -> [99] //lost
-        | 3 -> fly (movesleft-1) Red (boarda) // fly
-        | _ -> move (movesleft-1) Red (boarda)
+        let boarda = //checks if cow is in a mill, shoots if it is
+                match ismill board allgood (moveto.[0] + moveto.[1]) with
+                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+                |false -> allgood 
+         
+        printf "%A \n" boarda
+        match player with 
+        | Red -> 
+            match (countMyCows boarda 0 Blue) with
+            | 2 -> [99] //lost
+            | 3 -> move (movesleft-1) Blue (boarda) true //fly
+            | _ -> move (movesleft-1) Blue (boarda) false
+        |_ ->
+            match (countMyCows boarda 0 Red) with
+            | 2 -> [99] //lost
+            | 3 -> move (movesleft-1) Red (boarda) true // fly
+            | _ -> move (movesleft-1) Red (boarda) false
 
 /// <summary>
 /// Placing a cow
@@ -315,7 +351,7 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
         //match player with 
         //  | Red -> move (0) Blue (board) 
         //  |_ -> move (0) Red (board)
-        move 0 player board
+        move 0 player board false
     |_ ->                                                   
         let spot = interaction player board "play into" Neither // accepted input
         let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
@@ -328,6 +364,12 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
             match (ismill board (spott) (swapPlayerToInt player)) with
             |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
             |false -> board 
+      (*  
+        let boarda = //checks if cow is in a mill, shoots if it is
+                match ismill board allgood (moveto.[0] + moveto.[1]) with
+                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+                |false -> allgood 
+         *)
             
         match player with 
         | Red -> place Blue (cowsleft-1) boarda      //Go to Next Move
@@ -341,5 +383,5 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    let a = move 20 Red (place Red 8 flatboard)
+    let a = move 20 Red (place Red 12 flatboard)
     0
