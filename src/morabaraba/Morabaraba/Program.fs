@@ -87,14 +87,12 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
         fun (m: Mill) (spot: int) ->
             // For this we use it by giving it the list of potential mills, check if the player type matches in each of the 3 mill locations
             let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot]
-            //System.Console.WriteLine("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString())
             match a=checkEquals,b=checkEquals,c=checkEquals with
             | true, true, true ->
                 match checkEquals with
                 | 0-> false
                 | _ -> true
-                //System.Console.WriteLine ("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString()) 
-                //true // If each of the spots has the same value: it is a mill, we share "true"
+                // If each of the spots has the same value: it is a mill, we share "true"
             | _ -> false
     /// We find the set of chosen mills by saying "let's choose mills to look at that contain our spot from the list of mills"
     let chosenMills = getTheMills spot [] mills
@@ -105,7 +103,6 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
             match cm with
             | [] -> false // When the list gets empty we unfortunately found no mills
             | head::tail ->
-                //System.Console.WriteLine() 
                 // This calls the check each option defined above to get true or false if its a mill
                 //  - true => we have a mill, we can stop
                 //  - false => we look at the next one until the list of mills to check was emptied
