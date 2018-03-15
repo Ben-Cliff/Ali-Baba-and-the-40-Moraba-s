@@ -109,10 +109,5 @@ EG
 As one can see, A1 is the 1st and D3 the 24th element on the above printed board.
 This is simillarly represented on the integer list.
 
-
-
-
-
-
-     
-     
+## Releases (options):
+v0.75: ""./Morabaraba v0.75.rar"" in repo
