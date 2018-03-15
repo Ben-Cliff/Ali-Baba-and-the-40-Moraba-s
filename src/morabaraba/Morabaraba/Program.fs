@@ -196,26 +196,6 @@ let rec shoot (point : int) (victim: Player) (board: int list) (player : Player)
     |_ -> shoot 0 victim board player           //Case for shooting at a mill. Tries shoot again (asks for new input)
 
 
-////////////////////////////////////FLY Boi//////////////////////////////
-
-//let rec fly (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
-//    let froms = interaction player board "fly from" player // take in user input
-//    let movetos = interaction player board "fly to" Neither     // take in user input
-//    let (from : int list) = mrbaToFlat froms
-//    let (moveto : int list) = mrbaToFlat movetos 
-//
-//    let rec countMyCows =
-//        fun (b: int list) (total: int) (me : Player) ->
-//            match b with
-//            | [] -> total
-//            | head::tail ->
-//                match head=(swapPlayerToInt me) with
-//                | true -> countMyCows tail (total+1) me
-//                | false -> countMyCows tail total me
-//    let myCount = countMyCows board 0 player
-
-    
-
 /// <summary>
 /// In progress version allows the 24 placement moves (? Ernest unsure)
 /// </summary>
@@ -229,25 +209,6 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
         match isFly with
         | true -> "fly" 
         | false-> "move"
-    
-    //strings
-    let froms = interaction player board (isw + " from ") player // take in user input
-    let movetos = interaction player board (isw + " to ") Neither     // take in user input
-
-
-    let (from : int list) = mrbaToFlat froms
-    let (moveto : int list) = mrbaToFlat movetos 
-
-
-
-
-    (* let spot = interaction player board "play into" Neither // accepted input
-        let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
-                    |[9;9] -> [9;9]                         // TEMP. fail case goes here (? Ernest unsure)
-                    |_ -> mrbaToFlat spot*)
-
-
-
 
     let rec countMyCows =
         fun (b: int list) (total: int) (me : Player) ->
@@ -258,92 +219,98 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
                 | true -> countMyCows tail (total+1) me
                 | false -> countMyCows tail total me
     let myCount = countMyCows board 0 player
-    match isFly with
-    | true ->
-        let oneaway (from: int list) (moveto : int list) : bool = true //checks if move position is 1 away // not essential for fly. actually not essential at all
-           
-        let allgood = match oneaway from moveto with
-            |true ->
-                  let b = updateboard removecow player (from.[0] + from.[1]) board
-                  updateboard insertcow player (moveto.[0]+moveto.[1]) b
-            //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-            |_ -> move movesleft player board true //move movesleft mills 
+    let a =
+        match myCount with
+        | 2 -> 
+               match player with
+               | Red -> System.Console.WriteLine("BLUE WINS")
+               | Blue ->System.Console.WriteLine("RED WINS")
+               System.Console.ReadLine()
+               1
+        | _ -> 0
+    match a with
+    | 0 ->
+        //strings
+        let froms = interaction player board (isw + " from ") player // take in user input
+        let movetos = interaction player board (isw + " to ") Neither     // take in user input
+
+        let (from : int list) = mrbaToFlat froms
+        let (moveto : int list) = mrbaToFlat movetos 
+
+        match isFly with
+        | true ->
+            let oneaway (from: int list) (moveto : int list) : bool = true //checks if move position is 1 away // not essential for fly. actually not essential at all
+               
+            let allgood = match oneaway from moveto with
+                |true ->
+                      let b = updateboard removecow player (from.[0] + from.[1]) board
+                      updateboard insertcow player (moveto.[0]+moveto.[1]) b
+                //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+                |_ -> move movesleft player board true //move movesleft mills 
 
 
-        let boarda = //checks if cow is in a mill, shoots if it is
-                match ismill allgood moveto (moveto.[0] + moveto.[1]) with
-                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
-                |false -> allgood 
+            let boarda = //checks if cow is in a mill, shoots if it is
+                    match ismill allgood moveto (moveto.[0] + moveto.[1]) with
+                    |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+                    |false -> allgood 
 
-                //allgood -> moveto
-                //board -> allgood
-
-      //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000   
-       
-       
-       
-       
-       
-       
-       
-       
-        printf "%A \n" boarda
-        match player with 
-        | Red -> 
-            match (countMyCows boarda 0 Blue) with
-            | 2 -> [99999999]
-            | 3 -> move (movesleft-1) Blue (boarda) true
-            | _ -> move (movesleft-1) Blue (boarda) false
-        |_ ->
-            match (countMyCows boarda 0 Red) with
-            | 2 -> [99] //lost
-            | 3 -> move (movesleft-1) Red (boarda) true // fly
-            | _ -> move (movesleft-1) Red (boarda) false
-    | false ->
-        let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
-            let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
-            let b = (moveto.[0] = (from.[0] + 7)) || (moveto.[0] = (from.[0] - 7))
-            let c = (moveto.[1] = (from.[1] + 8)) || (moveto.[1] = (from.[1] - 8))
-            match  a, b, c with
-            | true, false, false
-            | false, true, false
-            | false, false, true ->
-                match board.[moveto.[0] + moveto.[1]]=0 with
-                | true -> true
+            printf "%A \n" boarda
+            match player with 
+            | Red -> 
+                match (countMyCows boarda 0 Blue) with
+                | 2 ->
+                    printf "RED Player Wins!!!"
+                    []
+                | _ -> move (movesleft-1) Blue (boarda) false
+            |_ ->
+                match (countMyCows boarda 0 Red) with
+                | 2 -> printf "BLUE Player Wins!!!"
+                       []
+                | 3 -> move (movesleft-1) Red (boarda) true // fly
+                | _ -> move (movesleft-1) Red (boarda) false
+        | false ->
+            let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
+                let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
+                let b = (moveto.[0] = (from.[0] + 7)) || (moveto.[0] = (from.[0] - 7))
+                let c = (moveto.[1] = (from.[1] + 8)) || (moveto.[1] = (from.[1] - 8))
+                match  a, b, c with
+                | true, false, false
+                | false, true, false
+                | false, false, true ->
+                    match board.[moveto.[0] + moveto.[1]]=0 with
+                    | true -> true
+                    | _ -> false
                 | _ -> false
-            | _ -> false
 
-        let allgood = match oneaway from moveto with
-            |true ->
-                  let b = updateboard removecow player (from.[0] + from.[1]) board
-                  updateboard insertcow player (moveto.[0]+moveto.[1]) b
-            //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-            |_ -> move movesleft player board isFly //move movesleft mills 
+            let allgood = match oneaway from moveto with
+                |true ->
+                      let b = updateboard removecow player (from.[0] + from.[1]) board
+                      updateboard insertcow player (moveto.[0]+moveto.[1]) b
+                //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
+                |_ -> move movesleft player board isFly //move movesleft mills 
 
-        let boarda = //checks if cow is in a mill, shoots if it is
-                match ismill allgood moveto (moveto.[0] + moveto.[1]) with
-                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
-                |false -> allgood 
+            let boarda = //checks if cow is in a mill, shoots if it is
+                    match ismill allgood moveto (moveto.[0] + moveto.[1]) with
+                    |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
+                    |false -> allgood 
 
+            match player with 
+            | Red -> 
+                match (countMyCows boarda 0 Blue) with
+                | 2 -> System.Console.Clear()
+                       writeWin "RED Player Wins!!!"
+                       []
+                | 3 -> move (movesleft-1) Blue (boarda) true //fly
+                | _ -> move (movesleft-1) Blue (boarda) false
+            |_ ->
+                match (countMyCows boarda 0 Red) with
+                | 2 -> System.Console.Clear()
+                       writeWin "BLUE Player Wins!!!"
+                       [] 
+                | 3 -> move (movesleft-1) Red (boarda) true // fly
+                | _ -> move (movesleft-1) Red (boarda) false
+    | 1 -> []
 
-//                              allgood -> moveto
-
-//0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-
-         
-        printf "%A \n" boarda
-        match player with 
-        | Red -> 
-            match (countMyCows boarda 0 Blue) with
-            | 2 -> [99] //lost
-            | 3 -> move (movesleft-1) Blue (boarda) true //fly
-            | _ -> move (movesleft-1) Blue (boarda) false
-        |_ ->
-            match (countMyCows boarda 0 Red) with
-            | 2 -> [99] //lost
-            | 3 -> move (movesleft-1) Red (boarda) true // fly
-            | _ -> move (movesleft-1) Red (boarda) false
 
 /// <summary>
 /// Placing a cow
@@ -356,11 +323,6 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
 let rec place (player : Player) (cowsleft : int) (board : int list) : int list = //SKELETON //cowsleft should be 24 when first called
     match cowsleft with
     |0 -> 
-        //System.Console.WriteLine("place")
-        //board
-        //match player with 
-        //  | Red -> move (0) Blue (board) 
-        //  |_ -> move (0) Red (board)
         move 0 player board false
     |_ ->                                                   
         let spot = interaction player board "play into" Neither // accepted input
@@ -374,12 +336,6 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
             match (ismill board (spott) (swapPlayerToInt player)) with
             |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
             |false -> board 
-      (*  
-        let boarda = //checks if cow is in a mill, shoots if it is
-                match ismill board allgood (moveto.[0] + moveto.[1]) with
-                |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
-                |false -> allgood 
-         *)
             
         match player with 
         | Red -> place Blue (cowsleft-1) boarda      //Go to Next Move
@@ -393,7 +349,10 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    System.Console.WriteLine("Welcome to morabaraba\n\nPlease note we will delay time after certain things happen. You cant press enter to make any move/choice - we read your keyboard and use that as input!\n\nEnjoy! Who will win?!")
-    System.Threading.Thread.Sleep(5000) // 5 second delay!
+    System.Console.WriteLine("Welcome to morabaraba\n\nPlease note we will delay time after certain things happen. You cant press enter to make any move/choice - we read your keyboard and use that as input!\n\nEnjoy! Who will win?!\n\nPress <enter> to play")
+    System.Console.ReadLine()
     move 20 Red (place Red 24 flatboard)
+    System.Console.ReadLine()
     0
+    
+

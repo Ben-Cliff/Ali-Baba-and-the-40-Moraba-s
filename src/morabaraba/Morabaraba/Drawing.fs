@@ -81,3 +81,7 @@ let writeError (msg : string) =
     System.Console.ForegroundColor<-System.ConsoleColor.Magenta
     System.Console.WriteLine(msg)
     System.Threading.Thread.Sleep(2000)
+
+let writeWin (msg : string) =
+    System.Console.ForegroundColor<-System.ConsoleColor.DarkYellow
+    System.Console.WriteLine(msg)
