@@ -1,6 +1,33 @@
 ﻿module DataSets
-
 open System
+
+/// <summary>
+/// Player data type
+/// </summary>
+type Player =
+| Red
+| Blue
+| Neither
+
+/// <summary>
+/// Gets the number of the player
+/// </summary>
+/// <param name="p"></param>
+let swapPlayerToInt (p : Player) =
+    match p with
+    | Red -> 1
+    | Blue -> 2
+    | _ -> 0
+
+/// <summary>
+/// Gets the player from a number
+/// </summary>
+/// <param name="i"></param>
+let swapIntToPlayer (i : int) =
+    match i with
+    | 1 -> Red
+    | 2 -> Blue
+    | _ -> Neither
 
 /// <summary>
 /// Positions we use for our data sets

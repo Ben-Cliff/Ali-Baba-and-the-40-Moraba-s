@@ -1,4 +1,4 @@
-﻿namespace morabHalfDone.AssemblyInfo
+﻿namespace Morabaraba.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
@@ -7,11 +7,11 @@ open System.Runtime.InteropServices
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[<assembly: AssemblyTitle("morabHalfDone")>]
+[<assembly: AssemblyTitle("Morabaraba")>]
 [<assembly: AssemblyDescription("")>]
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("morabHalfDone")>]
+[<assembly: AssemblyProduct("Morabaraba")>]
 [<assembly: AssemblyCopyright("Copyright ©  2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: ComVisible(false)>]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[<assembly: Guid("89e72711-dbc1-4e20-a386-88cdaa15f7ee")>]
+[<assembly: Guid("a1805866-9ee0-4073-b9e8-212cfaead4c6")>]
 
 // Version information for an assembly consists of the following four values:
 // 

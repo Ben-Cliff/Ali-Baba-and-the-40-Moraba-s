@@ -1,4 +1,4 @@
-﻿module Morabaraba
+﻿module Morabaraba.Game
 open DataSets
 open Drawing
 
@@ -18,7 +18,7 @@ open Drawing
 /// <param name="board">The board we are using</param>
 /// <param name="index">The index of the board element</param>
 /// <param name="valu">(? Ernest unsure)</param>
-let insertcow (player: int) (coord: int) (board : int list) (index : int) (valu: int): int = //this function is passed into updateboard (custom List.mapi), operates on each element
+let insertcow (player: Player) (coord: int) (board : int list) (index : int) (valu: Player): Player = //this function is passed into updateboard (custom List.mapi), operates on each element
     match index=coord with
     | true -> player // coord ofType in. (x+y)
     |_ -> valu
@@ -31,9 +31,9 @@ let insertcow (player: int) (coord: int) (board : int list) (index : int) (valu:
 /// <param name="board">The board we are using</param>
 /// <param name="index">The index of the board element</param>
 /// <param name="valu">(? Ernest unsure)</param>
-let removecow (player: int) (coord: int) (board : int list) (index : int) (valu: int): int = 
+let removecow (player: Player) (coord: int) (board : int list) (index : int) (valu: Player): Player = 
     match (index = coord) with
-    | true -> 0 //coord ofType in. (x+y)
+    | true -> Neither //coord ofType in. (x+y)
     |_ -> valu
 
 /// <summary>
@@ -43,11 +43,13 @@ let removecow (player: int) (coord: int) (board : int list) (index : int) (valu:
 /// <param name="player">Which player is using this (? Ernest unsure)</param>
 /// <param name="coord">The co-ordinates we are using</param>
 /// <param name="board">The board we are using</param>
-let updateboard (f : int -> int -> int list -> int -> int -> int) (player: int) (coord: int) (board : int list) : int list =      //Similar to mapi, altered for game purposes
+let updateboard (f : Player -> int -> int list -> int -> Player -> Player) (player: Player) (coord: int) (board : int list) : int list =      //Similar to mapi, altered for game purposes
     let rec innerF (lst : int list) (inc : int) (len : int) (ans : int list) : int list =    // inc used as length at first call, and list incerment in recursion 
         match (inc - len) with
         |0 -> ans
-        |a -> innerF lst (inc+1) len (List.append ans [(f player coord lst inc lst.[(inc)])])
+        |a ->
+            let fInner = f player coord lst inc (swapIntToPlayer lst.[(inc)])
+            innerF lst (inc+1) len (List.append ans [(swapPlayerToInt fInner)])
     innerF board 0 board.Length []
 
 /// <summary>
@@ -100,8 +102,8 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
 /// <param name="coords">The co-ordinates we are using</param>
 /// <param name="expect">What we are expecting</param>
 let inAct =
-    fun (board : int list) (coords : int list) (expect : int) -> // 0 empty, 1 player, 2 other player
-        board.[coords.[0] + coords.[1]]=expect
+    fun (board : int list) (coords : int list) (expect : Player) -> // 0 empty, 1 player, 2 other player
+        board.[coords.[0] + coords.[1]]=(swapPlayerToInt expect)
 
 /// <summary>
 /// The main game loop, more is eplained inside
@@ -110,14 +112,14 @@ let inAct =
 /// <param name="board">The board we are using</param>
 /// <param name="sentence">The sentence which describes the current play that's running</param>
 /// <param name="expect">What we are expecting</param>
-let rec interaction (player :int ) (board : int list) (sentence : string) (expect : int) : string =  //takes in input and checks if it exsists (see isoccupied for position che)
+let rec interaction (player : Player) (board : int list) (sentence : string) (expect : Player) : string =  //takes in input and checks if it exsists (see isoccupied for position che)
     // This draws the board for us, Ernest's personal preference is clearing the console so it's more like a "game"
     System.Console.Clear()
     drawBoard board
     
     // Work out what to tell the player
     let msg = sprintf "%A's  turn: type the Y value of the cell that you want to %s. 
-             Only accepts letters A ; B ; C ; D; E ; F ; G" (getIcon player) sentence // sentence = "play into" for place state as appose to "move from " alterative for move state
+             Only accepts letters A ; B ; C ; D; E ; F ; G" (getIcon (swapPlayerToInt player)) sentence // sentence = "play into" for place state as appose to "move from " alterative for move state
     consColorWrite msg
     let i = (System.Convert.ToString (System.Console.ReadKey true).KeyChar).ToUpper() // Making it upper means we can use upper or lower case for input typing
     match i with 
@@ -146,10 +148,10 @@ let rec interaction (player :int ) (board : int list) (sentence : string) (expec
 /// Returns the opposit player
 /// </summary>
 /// <param name="player"></param>
-let otherplayer (player : int) : int =
+let otherplayer (player : Player) : Player =
     match player with 
-    |1 -> 2
-    |_ -> 1
+    |Red -> Blue
+    |_ -> Red
 
 /// <summary>
 /// When you shoot a cow, this is the function called
@@ -158,7 +160,7 @@ let otherplayer (player : int) : int =
 /// <param name="victim">The victim you are shooting</param>
 /// <param name="board">The board we are using</param>
 /// <param name="player">The current player</param>
-let shoot (point : int) (victim: int) (board: int list) (player): int list = //Still need to make sure the victim cow is not in a mill
+let shoot (point : int) (victim: Player) (board: int list) (player : Player): int list = //Still need to make sure the victim cow is not in a mill
     System.Console.Clear()
     drawBoard board
     System.Console.WriteLine("MIll Formed. Here I go killin' again")
@@ -175,25 +177,25 @@ let shoot (point : int) (victim: int) (board: int list) (player): int list = //S
 /// <param name="cowsleft">The number of cows we have left in the game to place (? Ernest unsure)</param>
 /// <param name="board">The board we are using</param>
 /// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
-let rec place (player : int) (cowsleft : int) (board : int list) : int list = //SKELETON //cowsleft should be 24 when first called
+let rec place (player : Player) (cowsleft : int) (board : int list) : int list = //SKELETON //cowsleft should be 24 when first called
     match cowsleft with
     |0 -> board
     |_ ->                                                   
-        let spot = interaction player board "play into" (0) // accepted input
+        let spot = interaction player board "play into" Neither // accepted input
         let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
                     |[9;9] -> [9;9]                         // TEMP. fail case goes here (? Ernest unsure)
                     |_ -> mrbaToFlat spot
 
-        let board = updateboard insertcow player (spott.[0] + spott.[1]) (*<- this is x+y. see ReadMe*) board
+        let board = updateboard (insertcow) player (spott.[0] + spott.[1]) (*<- this is x+y. see ReadMe*) board
 
         let boarda =                                        //checks if cow is in a mill, shoots if it is
-            match (ismill board (spott) player) with
+            match (ismill board (spott) (swapPlayerToInt player)) with
             |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
             |false -> board 
             
         match player with 
-        |1 -> place 2 (cowsleft-1) boarda      //Go to Next Move
-        |_ -> place 1 (cowsleft-1) boarda
+        | Red -> place Blue (cowsleft-1) boarda      //Go to Next Move
+        |_ -> place Red (cowsleft-1) boarda
         
 /// <summary>
 /// In progress version allows the 24 placement moves (? Ernest unsure)
@@ -203,9 +205,9 @@ let rec place (player : int) (cowsleft : int) (board : int list) : int list = //
 /// <param name="player">The current player</param>
 /// <param name="board">The board we are using</param>
 /// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
-let rec move (movesleft : int) (player : int) (board : int list) (ismill : Mill list -> int list -> int list -> int -> bool) : int list =        //SKELETON 
+let rec move (movesleft : int) (player : Player) (board : int list) (ismill : Mill list -> int list -> int list -> int -> bool) : int list =        //SKELETON 
     let froms = interaction player board "move from" player // take in user input
-    let movetos = interaction player board "move to" 0      // take in user input
+    let movetos = interaction player board "move to" Neither     // take in user input
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
 
@@ -223,21 +225,23 @@ let rec move (movesleft : int) (player : int) (board : int list) (ismill : Mill 
         | _ -> false
 
     let allgood = match oneaway from moveto with
-                  |true -> updateboard insertcow player (moveto.[0]+moveto.[1]) (updateboard removecow player (from.[0] + from.[1]) board)  
+                  |true ->
+                        let b = updateboard removecow player (from.[0] + from.[1]) board
+                        updateboard insertcow player (moveto.[0]+moveto.[1]) b
                   //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
                   |_ -> move movesleft player board ismill //move movesleft mills 
 
     let boarda = //checks if cow is in a mill, shoots if it is
-            match (ismill mills allgood (moveto) player) with
+            match (ismill mills allgood (moveto) (swapPlayerToInt player)) with
             |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
             |false -> allgood 
 
-    printf"%A \n"boarda
+    printf "%A \n" boarda
     match movesleft with
     |0 -> boarda
     |_ -> match player with 
-          |1 -> move (movesleft-1) 2 (boarda) ismill 
-          |_ -> move (movesleft-1) 1 (boarda) ismill
+          | Red -> move (movesleft-1) Blue (boarda) ismill 
+          |_ -> move (movesleft-1) Red (boarda) ismill
 
 //---------------------------------------------------------------------------------
 // WE START HERE
@@ -245,7 +249,5 @@ let rec move (movesleft : int) (player : int) (board : int list) (ismill : Mill 
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    move 20 1 (place 1 24 flatboard)
+    move 20 Blue (place Blue 24 flatboard)
     0
-
-
