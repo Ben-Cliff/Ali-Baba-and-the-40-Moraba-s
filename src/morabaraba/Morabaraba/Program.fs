@@ -185,34 +185,6 @@ let shoot (point : int) (victim: Player) (board: int list) (player : Player): in
     updateboard removecow victim ((mrbaToFlat point).[0] + (mrbaToFlat point).[1]) board
 
 /// <summary>
-/// Placing a cow
-/// </summary>
-/// <param name="mills">The built up mills we have in DataSets</param>
-/// <param name="player">The current player</param>
-/// <param name="cowsleft">The number of cows we have left in the game to place (? Ernest unsure)</param>
-/// <param name="board">The board we are using</param>
-/// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
-let rec place (player : Player) (cowsleft : int) (board : int list) : int list = //SKELETON //cowsleft should be 24 when first called
-    match cowsleft with
-    |0 -> board
-    |_ ->                                                   
-        let spot = interaction player board "play into" Neither // accepted input
-        let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
-                    |[9;9] -> [9;9]                         // TEMP. fail case goes here (? Ernest unsure)
-                    |_ -> mrbaToFlat spot
-
-        let board = updateboard (insertcow) player (spott.[0] + spott.[1]) (*<- this is x+y. see ReadMe*) board
-
-        let boarda =                                        //checks if cow is in a mill, shoots if it is
-            match (ismill board (spott) (swapPlayerToInt player)) with
-            |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
-            |false -> board 
-            
-        match player with 
-        | Red -> place Blue (cowsleft-1) boarda      //Go to Next Move
-        |_ -> place Red (cowsleft-1) boarda
-        
-/// <summary>
 /// In progress version allows the 24 placement moves (? Ernest unsure)
 /// </summary>
 /// <param name="movesleft">The number of placements left (? Ernest unsure : we might change this slightly)</param>
@@ -220,11 +192,13 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
 /// <param name="player">The current player</param>
 /// <param name="board">The board we are using</param>
 /// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
-let rec move (movesleft : int) (player : Player) (board : int list) (ismill : Mill list -> int list -> int list -> int -> bool) : int list =        //SKELETON 
+let rec move (movesleft : int) (player : Player) (board : int list) : int list =        //SKELETON 
     let froms = interaction player board "move from" player // take in user input
     let movetos = interaction player board "move to" Neither     // take in user input
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
+
+    System.Console.WriteLine("move")
 
     let oneaway (from: int list) (moveto : int list) : bool = //checks if move position is 1 away
         let a = (moveto.[0] = (from.[0] + 1)) || (moveto.[0] = (from.[0] - 1))
@@ -244,19 +218,55 @@ let rec move (movesleft : int) (player : Player) (board : int list) (ismill : Mi
                         let b = updateboard removecow player (from.[0] + from.[1]) board
                         updateboard insertcow player (moveto.[0]+moveto.[1]) b
                   //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
-                  |_ -> move movesleft player board ismill //move movesleft mills 
+                  |_ -> move movesleft player board //move movesleft mills 
 
     let boarda = //checks if cow is in a mill, shoots if it is
-            match (ismill mills allgood (moveto) (swapPlayerToInt player)) with
+            match ismill board allgood (moveto.[0] + moveto.[1]) with
             |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
             |false -> allgood 
-
+     
     printf "%A \n" boarda
     match movesleft with
     |0 -> boarda
     |_ -> match player with 
-          | Red -> move (movesleft-1) Blue (boarda) ismill 
-          |_ -> move (movesleft-1) Red (boarda) ismill
+          | Red -> move (movesleft-1) Blue (boarda) 
+          |_ -> move (movesleft-1) Red (boarda)
+
+/// <summary>
+/// Placing a cow
+/// </summary>
+/// <param name="mills">The built up mills we have in DataSets</param>
+/// <param name="player">The current player</param>
+/// <param name="cowsleft">The number of cows we have left in the game to place (? Ernest unsure)</param>
+/// <param name="board">The board we are using</param>
+/// <param name="ismill">The function we use to work out if there is a mill (? Ernest unsure : we can move this)</param>
+let rec place (player : Player) (cowsleft : int) (board : int list) : int list = //SKELETON //cowsleft should be 24 when first called
+    match cowsleft with
+    |0 -> 
+        //System.Console.WriteLine("place")
+        //board
+        //match player with 
+        //  | Red -> move (0) Blue (board) 
+        //  |_ -> move (0) Red (board)
+        move 0 player board
+    |_ ->                                                   
+        let spot = interaction player board "play into" Neither // accepted input
+        let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
+                    |[9;9] -> [9;9]                         // TEMP. fail case goes here (? Ernest unsure)
+                    |_ -> mrbaToFlat spot
+
+        let board = updateboard (insertcow) player (spott.[0] + spott.[1]) (*<- this is x+y. see ReadMe*) board
+
+        let boarda =                                        //checks if cow is in a mill, shoots if it is
+            match (ismill board (spott) (swapPlayerToInt player)) with
+            |true -> shoot (spott.[0] + spott.[1]) (otherplayer player) board player
+            |false -> board 
+            
+        match player with 
+        | Red -> place Blue (cowsleft-1) boarda      //Go to Next Move
+        |_ -> place Red (cowsleft-1) boarda
+        
+
 
 //---------------------------------------------------------------------------------
 // WE START HERE
@@ -264,5 +274,5 @@ let rec move (movesleft : int) (player : Player) (board : int list) (ismill : Mi
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    move 20 Blue (place Blue 24 flatboard)
+    let a = move 20 Blue (place Blue 8 flatboard)
     0
