@@ -60,31 +60,7 @@ let updateboard (f : Player -> int -> int list -> int -> Player -> Player) (play
 /// <param name="spot">The co-ordinates we are using</param>
 /// <param name="player">The current player</param>
 let ismill (board : int list) (spot : int list) (player : int): bool =
-    let mills = 
-        let a = { PointA ={x= 0;y= 0} ; PointB = {x= 0;y= 8} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //verticals up-> down
-        let b = { PointA ={x= 1;y= 0} ; PointB = {x= 1;y= 8} ; PointC = {x= 1;y= 16} ; Activ = false ; Relodid = true} // ''
-        let c = { PointA ={x= 2;y= 0} ; PointB = {x= 2;y= 8} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // ''
-        let d = { PointA ={x= 3;y= 0} ; PointB = {x= 3;y= 8} ; PointC = {x= 3;y= 16} ; Activ = false ; Relodid = true}
-        let e = { PointA ={x= 4;y= 0} ; PointB = {x= 4;y= 8} ; PointC = {x= 4;y= 16} ; Activ = false ; Relodid = true}
-        let f = { PointA ={x= 5;y= 0} ; PointB = {x= 5;y= 8} ; PointC = {x= 5;y= 16} ; Activ = false ; Relodid = true}
-        let g = { PointA ={x= 6;y= 0} ; PointB = {x= 6;y= 8} ; PointC = {x= 6;y= 16} ; Activ = false ; Relodid = true}
-        let h = { PointA ={x= 7;y= 0} ; PointB = {x= 7;y= 8} ; PointC = {x= 7;y= 16} ; Activ = false ; Relodid = true}
-        
-        let i = { PointA ={x= 0;y= 0} ; PointB = {x= 1;y= 0} ; PointC = {x= 2;y= 0} ; Activ = false ; Relodid = true} //Horizontal row Left -> right starting left corner 
-        let j = { PointA ={x= 2;y= 0} ; PointB = {x= 3;y= 0} ; PointC = {x= 4;y= 0} ; Activ = false ; Relodid = true}
-        let k = { PointA ={x= 4;y= 0} ; PointB = {x= 5;y= 0} ; PointC = {x= 6;y= 0} ; Activ = false ; Relodid = true}
-        let l = { PointA ={x= 6;y= 0} ; PointB = {x= 7;y= 0} ; PointC = {x= 0;y= 0} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
-        
-        let m = { PointA ={x= 0;y= 8} ; PointB = {x= 1;y= 8} ; PointC = {x= 2;y= 8} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
-        let n = { PointA ={x= 2;y= 8} ; PointB = {x= 3;y= 8} ; PointC = {x= 4;y= 8} ; Activ = false ; Relodid = true}
-        let o = { PointA ={x= 4;y= 8} ; PointB = {x= 5;y= 8} ; PointC = {x= 6;y= 8} ; Activ = false ; Relodid = true}
-        let p = { PointA ={x= 6;y= 8} ; PointB = {x= 7;y= 8} ; PointC = {x= 0;y= 8} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0)  
-        
-        let q = { PointA ={x= 0;y= 16} ; PointB = {x= 1;y= 16} ; PointC = {x= 2;y= 16} ; Activ = false ; Relodid = true} // horizontal second row Left -> right
-        let r = { PointA ={x= 2;y= 16} ; PointB = {x= 3;y= 16} ; PointC = {x= 4;y= 16} ; Activ = false ; Relodid = true}
-        let s = { PointA ={x= 4;y= 16} ; PointB = {x= 5;y= 16} ; PointC = {x= 6;y= 16} ; Activ = false ; Relodid = true}
-        let t = { PointA ={x= 6;y= 16} ; PointB = {x= 7;y= 16} ; PointC = {x= 0;y= 16} ; Activ = false ; Relodid = true} //Note! loop around     ( 0 ; 0) 
-        [a;b;c;d;e;f;g;h;i;j;k;l;m;n;o;p;q;r;s;t]
+    
     /// getMillValue checks if each of the 3 tiles in the mill have the same value
     let getMillValue =
         fun (m:Mill) ->
@@ -254,10 +230,24 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
         | true -> "fly" 
         | false-> "move"
     
-    let froms = interaction player board (isw + " to ") player // take in user input
+    //strings
+    let froms = interaction player board (isw + " from ") player // take in user input
     let movetos = interaction player board (isw + " to ") Neither     // take in user input
+
+
     let (from : int list) = mrbaToFlat froms
     let (moveto : int list) = mrbaToFlat movetos 
+
+
+
+
+    (* let spot = interaction player board "play into" Neither // accepted input
+        let spott = match (mrbaToFlat spot) with            // Testing if use input is valid
+                    |[9;9] -> [9;9]                         // TEMP. fail case goes here (? Ernest unsure)
+                    |_ -> mrbaToFlat spot*)
+
+
+
 
     let rec countMyCows =
         fun (b: int list) (total: int) (me : Player) ->
@@ -279,11 +269,24 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
             //board is updated to remove cow. this result is passed into the next update which adds the cow to its new position.           
             |_ -> move movesleft player board true //move movesleft mills 
 
+
         let boarda = //checks if cow is in a mill, shoots if it is
-                match ismill board allgood (moveto.[0] + moveto.[1]) with
+                match ismill allgood moveto (moveto.[0] + moveto.[1]) with
                 |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
                 |false -> allgood 
-         
+
+                //allgood -> moveto
+                //board -> allgood
+
+      //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000   
+       
+       
+       
+       
+       
+       
+       
+       
         printf "%A \n" boarda
         match player with 
         | Red -> 
@@ -318,9 +321,16 @@ let rec move (movesleft : int) (player : Player) (board : int list) (isFly : boo
             |_ -> move movesleft player board isFly //move movesleft mills 
 
         let boarda = //checks if cow is in a mill, shoots if it is
-                match ismill board allgood (moveto.[0] + moveto.[1]) with
+                match ismill allgood moveto (moveto.[0] + moveto.[1]) with
                 |true -> shoot (moveto.[0] + moveto.[1]) (otherplayer player) allgood player
                 |false -> allgood 
+
+
+//                              allgood -> moveto
+
+//0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+
          
         printf "%A \n" boarda
         match player with 
