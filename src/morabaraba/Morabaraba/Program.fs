@@ -87,7 +87,7 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
         fun (m: Mill) (spot: int) ->
             // For this we use it by giving it the list of potential mills, check if the player type matches in each of the 3 mill locations
             let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot]
-            System.Console.WriteLine("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString())
+            //System.Console.WriteLine("pointA" + board.[m.PointA.x+m.PointA.y].ToString() + "  pointb" + board.[m.PointB.x+m.PointB.y].ToString() + "pointc " + board.[m.PointC.x+m.PointC.y].ToString() + "board.[spot]   " + board.[spot].ToString())
             match a=checkEquals,b=checkEquals,c=checkEquals with
             | true, true, true ->
                 match checkEquals with
@@ -105,7 +105,7 @@ let ismill (board : int list) (spot : int list) (player : int): bool =
             match cm with
             | [] -> false // When the list gets empty we unfortunately found no mills
             | head::tail ->
-                System.Console.WriteLine() 
+                //System.Console.WriteLine() 
                 // This calls the check each option defined above to get true or false if its a mill
                 //  - true => we have a mill, we can stop
                 //  - false => we look at the next one until the list of mills to check was emptied
@@ -138,7 +138,7 @@ let inAct =
 /// <param name="expect">What we are expecting</param>
 let rec interaction (player : Player) (board : int list) (sentence : string) (expect : Player) : string =  //takes in input and checks if it exsists (see isoccupied for position che)
     // This draws the board for us, Ernest's personal preference is clearing the console so it's more like a "game"
-    //System.Console.Clear()
+    System.Console.Clear()
     drawBoard board
     
     // Work out what to tell the player
@@ -185,7 +185,7 @@ let otherplayer (player : Player) : Player =
 /// <param name="board">The board we are using</param>
 /// <param name="player">The current player</param>
 let rec shoot (point : int) (victim: Player) (board: int list) (player : Player): int list = //Still need to make sure the victim cow is not in a mill
-    //System.Console.Clear()
+    System.Console.Clear()
     drawBoard board
     System.Console.WriteLine("MIll Formed. Here I go killin' again")
     System.Threading.Thread.Sleep(2000)
@@ -393,5 +393,7 @@ let rec place (player : Player) (cowsleft : int) (board : int list) : int list =
 let (placedboard : int list) = [0]
 [<EntryPoint>]
 let main argv = 
-    let a = move 20 Red (place Red 12 flatboard)
+    System.Console.WriteLine("Welcome to morabaraba\n\nPlease note we will delay time after certain things happen. You cant press enter to make any move/choice - we read your keyboard and use that as input!\n\nEnjoy! Who will win?!")
+    System.Threading.Thread.Sleep(5000) // 5 second delay!
+    move 20 Red (place Red 24 flatboard)
     0
