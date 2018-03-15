@@ -60,35 +60,50 @@ let updateboard (f : Player -> int -> int list -> int -> Player -> Player) (play
 /// <param name="spot">The co-ordinates we are using</param>
 /// <param name="player">The current player</param>
 let ismill (board : int list) (spot : int list) (player : int): bool =
+    /// getMillValue checks if each of the 3 tiles in the mill have the same value
     let getMillValue =
         fun (m:Mill) ->
-            (board.[m.PointA.x + m.PointA.y]=player)&&((board.[m.PointA.x + m.PointA.y]=board.[m.PointB.x + m.PointB.y])&&(board.[m.PointC.x + m.PointC.y]=board.[m.PointB.x + m.PointB.y]))
+            // First this makes sure this choice was the player that runs this function
+            let firstCheck = (board.[m.PointA.x + m.PointA.y]=player)
+            // Second the other 2 positions in the mill opportunity must be the same as the player
+            let secondCheck = ((board.[m.PointA.x + m.PointA.y]=board.[m.PointB.x + m.PointB.y])&&(board.[m.PointC.x + m.PointC.y]=board.[m.PointB.x + m.PointB.y]))
+            // if First and Second are successful we are showing that the player has a mill here
+            firstCheck&&secondCheck
+    /// getTheMills checks if any of the 3 positions in a Mill (3 points) is the spot we are looking at the mills for
     let rec getTheMills = 
-        fun (sspot : int list) (allThem : Mill list) (b : Mill list) ->
+        fun (spot : int list) (allThem : Mill list) (b : Mill list) ->
+            // Check each item in our list that has ALL the mills
             match b with
-            | [] -> allThem
+            | [] -> allThem // allThem is the list of mills we create with each and every mill that contains spot
             | head::tail ->
-                match ((head.PointA.x=sspot.[0])&&(head.PointA.y=sspot.[1]))||((head.PointB.x=sspot.[0])&&(head.PointB.y=sspot.[1]))||((head.PointC.x=sspot.[0])&&(head.PointC.y=sspot.[1])) with
-                | true -> getTheMills sspot (head::allThem) tail
-                | false -> getTheMills sspot allThem tail
+                // Check if the PointA OR PointB OR PointC is the point we are checking the mills for (it can be either A, B, or C)
+                //  - if that mill contains the spot we add it to "allThem" which is our answer
+                match ((head.PointA.x=spot.[0])&&(head.PointA.y=spot.[1]))||((head.PointB.x=spot.[0])&&(head.PointB.y=spot.[1]))||((head.PointC.x=spot.[0])&&(head.PointC.y=spot.[1])) with
+                | true -> getTheMills spot (head::allThem) tail
+                | false -> getTheMills spot allThem tail
+    /// checkEachOption checks if all the values in our board list are the same as the one we expect
     let checkEachOption =
-        fun (m: Mill) (spot: int list) ->
-            match ((m.PointA.x+m.PointA.y=spot.[0]+spot.[1])||(m.PointB.x+m.PointB.y=spot.[0]+spot.[1])||(m.PointC.x+m.PointC.y=spot.[0]+spot.[1])) with
-            | true ->
-                let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot.[0]+spot.[1]]
-                match a=checkEquals,b=checkEquals,c=checkEquals with
-                | true, true, true -> true
-                | _ -> false
+        fun (m: Mill) (spot: int) ->
+            // For this we use it by giving it the list of potential mills, check if the player type matches in each of the 3 mill locations
+            let a, b, c, checkEquals = board.[m.PointA.x+m.PointA.y], board.[m.PointB.x+m.PointB.y], board.[m.PointC.x+m.PointC.y], board.[spot]
+            match a=checkEquals,b=checkEquals,c=checkEquals with
+            | true, true, true -> true // If each of the spots has the same value: it is a mill, we share "true"
             | _ -> false
+    /// We find the set of chosen mills by saying "let's choose mills to look at that contain our spot from the list of mills"
     let chosenMills = getTheMills spot [] mills
+    /// eachChoice checks on each of the mills that we found with getTheMills above this and returns true if 1 mill was formed with the move
     let rec eachChoice =
         fun (cm: Mill list) (spooot: int list) ->
             match cm with
-            | [] -> false
+            | [] -> false // When the list gets empty we unfortunately found no mills
             | head::tail ->
-                match checkEachOption head spot with
+                // This calls the check each option defined above to get true or false if its a mill
+                //  - true => we have a mill, we can stop
+                //  - false => we look at the next one until the list of mills to check was emptied
+                match checkEachOption head (spot.[0]+spot.[1]) with
                 | true -> true
                 | false -> eachChoice tail spot
+    
     eachChoice chosenMills spot
 
 //---------------------------------------------------------------------------------
